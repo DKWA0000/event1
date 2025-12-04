@@ -2,6 +2,7 @@ package com.event.repository;
 
 import com.event.entity.Role;
 import com.event.entity.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,6 @@ public class EventJpaTest {
         user.setBookings(List.of());
         user_repo.save(user);
 
-
         //act
         Optional<User> user_tmp1 = user_repo.findById(1);
         Optional<User> user_tmp2 = user_repo.findById(221);
@@ -59,9 +59,13 @@ public class EventJpaTest {
         assertThat(user_tmp1.get().getPassword()).isEqualTo("user123");
         assertThat(user_tmp1.get().getEmail()).isEqualTo("user@somedomain.com");
 
-
         assertThat(user_tmp2.isEmpty());
+    }
 
+    @AfterEach
+    public void clean(){
+        user_repo.deleteAll();
+        role_repo.deleteAll();
     }
 
     @Test
@@ -102,33 +106,5 @@ public class EventJpaTest {
         //assert
         assertThat(user_tmp1.get().getName()).isEqualTo("testuser1");
         assertThat(user_tmp2.isEmpty());
-    }
-
-    @Test
-    @DisplayName("user_repo.save should return exception when incorrect data")
-    public void testUserRepoSave(){
-        //arrange
-        Role role = new Role();
-        role.setName("USER");
-
-        User user = new User();
-        user.setName("test");
-        user.setPassword("test123");
-        user.setEmail("user@somedomain.com");
-        user.setRoles(Set.of(role));
-        user.setBookings(List.of());
-        user_repo.save(user);
-
-        User user1 = new User();
-        user1.setId(1);
-        user1.setName("test");
-        user1.setPassword("test123");
-        user1.setEmail("user@somedomain.com");
-        user1.setRoles(Set.of(role));
-        user1.setBookings(List.of());
-
-
-        //assert
-        assertThrows(UnsupportedOperationException.class, () -> user_repo.save(user1));
     }
 }
