@@ -112,11 +112,15 @@ public class UserService {
     }
 
     public List<ResponseEventDto> getEventsBy(RequestSearchEventDto dto){
-        return event_repo.findAll().stream()
+        List<ResponseEventDto> tmp = event_repo.findAll().stream()
                 .filter(event -> (event.getTitle().contains(dto.getTitle())) ||
                         ((event.getEventDate().isAfter(dto.getStartDate())) &&
                         (event.getEventDate().isBefore(dto.getEndDate()))) ||
                         ((event.getMaxParticipants() - event.getCurrentParticipants()) >=
                                 dto.getPlacesLeft())).map(this::convertToEvent).toList();
+        if(tmp.isEmpty()){
+            throw new EventNotFoundException("Cannot find matching event");
+        }
+        return tmp;
     }
 }

@@ -3,6 +3,7 @@ package com.event.service.userservice;
 import com.event.dto.request.RequestSearchEventDto;
 import com.event.dto.response.ResponseEventDto;
 import com.event.entity.Event;
+import com.event.exception.EventNotFoundException;
 import com.event.repository.EventRepository;
 import com.event.service.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,10 +76,9 @@ public class GetEventsByTest {
         //arrange
         when(event_repo.findAll()).thenReturn(List.of());
 
-        //act
-        List<ResponseEventDto> dto_tmp = user_service.getEventsBy(request_dto);
-
         //assert
-        assertEquals(0, dto_tmp.size());
+        EventNotFoundException exception = assertThrows(EventNotFoundException.class,
+                () -> user_service.getEventsBy(request_dto));
+        assertEquals("Cannot find matching event", exception.getMessage());
     }
 }

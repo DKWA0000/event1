@@ -1,7 +1,6 @@
 package com.event.repository;
 
 import com.event.entity.Role;
-import com.event.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
 
